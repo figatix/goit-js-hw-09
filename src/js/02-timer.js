@@ -12,6 +12,7 @@ const startEl = document.querySelector('button[data-start]')
 startEl.disabled = true
 
 let deadline = null;
+let intervalId = null;
 
 const options = {
   enableTime: true,
@@ -35,7 +36,13 @@ function onStartClick(e) {
   startEl.disabled = true
   dateTimeEl.disabled = true
 
-  setInterval(() => {
+  intervalId = setInterval(() => {
+    if (deadline - Date.now() <= 0) {
+      clearInterval(intervalId);
+      Notify.success("Time is up :)")
+      return;
+    }
+
     const { days, hours, minutes, seconds } = convertMs(deadline - Date.now())
 
     daysEl.textContent = addLeadingZero(days);
